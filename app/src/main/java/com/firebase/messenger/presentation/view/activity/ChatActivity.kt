@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import com.firebase.messenger.R
+import com.firebase.messenger.data.model.Dialog
 import com.firebase.messenger.data.model.Message
 import com.firebase.messenger.presentation.di.Injector
 import com.firebase.messenger.presentation.presenter.ChatPresenter
@@ -18,6 +19,12 @@ import kotlinx.android.synthetic.main.activity_chat.*
 import javax.inject.Inject
 
 class ChatActivity : AppCompatActivity(), ChatView {
+
+
+    override fun renderDialog(dialog: Dialog) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
     override fun renderQuery(querySnapshot: QuerySnapshot) {
         adapter.renderQuery(querySnapshot)
     }
@@ -39,14 +46,11 @@ class ChatActivity : AppCompatActivity(), ChatView {
         adapter = ChatAdapter(this)
         recyclerView.adapter = adapter
         recyclerView.layoutManager = LinearLayoutManager(this,RecyclerView.VERTICAL,true)
-
         presenter.attachView(this)
         presenter.initialize(intent.getStringExtra("dialogId"))
-
-
         sentBtn.setOnClickListener{
             if (messageField.text.toString().isEmpty())return@setOnClickListener
-            FirebaseFirestore.getInstance().collection("${intent.getStringExtra("dialogId")}/messages").add(Message(messageField.text.toString())).addOnCompleteListener {  }
+            presenter.sentMessage(intent.getStringExtra("dialogId"),Message(messageField.text.toString()))
             messageField.text.clear()
         }
     }

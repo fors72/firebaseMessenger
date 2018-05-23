@@ -1,6 +1,8 @@
 package com.firebase.messenger.presentation.presenter
 
 import android.util.Log
+import com.firebase.messenger.data.model.Message
+import com.firebase.messenger.domain.interactor.ChatUseCase
 import com.firebase.messenger.domain.interactor.FirestoreCollectionUseCase
 import com.firebase.messenger.domain.rx.DefaultObserver
 import com.firebase.messenger.presentation.di.Injector
@@ -18,7 +20,7 @@ import javax.inject.Inject
 
 
 @ChatScope
-class ChatPresenter @Inject constructor(private val useCase: FirestoreCollectionUseCase):BasePresenter<ChatView,List<DocumentSnapshot>>() {
+class ChatPresenter @Inject constructor(private val useCase: ChatUseCase):BasePresenter<ChatView,List<DocumentSnapshot>>() {
 
 
     var isLoading = false
@@ -26,14 +28,14 @@ class ChatPresenter @Inject constructor(private val useCase: FirestoreCollection
 
 
     fun initialize(dialogId:String,limit:Int = 40){
-        if (isLoading/* || model != null*/)return
-        val query = FirebaseFirestore.getInstance()
-                .collection("$dialogId/messages")
-                .orderBy("time", Query.Direction.DESCENDING)
-                .limit(limit.toLong())
+        if (isLoading)return
         isLoading = true
         useCase.clean()
-        useCase.execute(query,DialogObserver())
+        useCase.getMessages(dialogId,MessageObserver(),limit)
+    }
+
+    fun sentMessage(dialogId:String,message: Message){
+        useCase.sentMessage(dialogId, message)
     }
 
 
@@ -47,7 +49,7 @@ class ChatPresenter @Inject constructor(private val useCase: FirestoreCollection
         Injector.clearChatComponent()
     }
 
-    inner class DialogObserver: DefaultObserver<QuerySnapshot>() {
+    inner class MessageObserver: DefaultObserver<QuerySnapshot>() {
 
         override fun onNext(t: QuerySnapshot) {
             model = t.documents
@@ -62,8 +64,16 @@ class ChatPresenter @Inject constructor(private val useCase: FirestoreCollection
         override fun onError(e: Throwable) {
             Log.e("err",e.message)
         }
+    }
+    inner class DialogObserver: DefaultObserver<QuerySnapshot>() {
 
+        override fun onNext(t: QuerySnapshot) {
 
+        }
+
+        override fun onError(e: Throwable) {
+            Log.e("err",e.message)
+        }
     }
 
 }

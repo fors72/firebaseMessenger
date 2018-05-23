@@ -7,8 +7,12 @@ import io.reactivex.Observer
 import javax.inject.Inject
 
 open class FirestoreCollectionUseCase @Inject constructor(): UseCase<QuerySnapshot, Query>() {
-    override fun buildUseCaseObservable(params: Query?): Observable<QuerySnapshot> {
-        return FirestoreCollectionObservable(params!!)
+    override fun buildUseCaseObservableUnit(params: Query): Observable<Unit> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun buildUseCaseObservable(params: Query): Observable<QuerySnapshot> {
+        return FirestoreCollectionObservable(params)
 
     }
 

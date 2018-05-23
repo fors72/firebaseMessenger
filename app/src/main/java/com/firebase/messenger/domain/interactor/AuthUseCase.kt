@@ -11,10 +11,13 @@ import io.reactivex.Observer
 import javax.inject.Inject
 
 class AuthUseCase @Inject constructor(): UseCase<User?, Task<AuthResult>>() {
+    override fun buildUseCaseObservableUnit(params: Task<AuthResult>): Observable<Unit> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 
 
-    override fun buildUseCaseObservable(params: Task<AuthResult>?): Observable<User?> {
-        return AuthObservable(params!!)
+    override fun buildUseCaseObservable(params: Task<AuthResult>): Observable<User?> {
+        return AuthObservable(params)
     }
 
     inner class AuthObservable(private val task:Task<AuthResult>):Observable<User?>(){
