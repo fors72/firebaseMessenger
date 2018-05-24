@@ -40,7 +40,7 @@ class SentMessageObservable(private val path:String, val message: Message): Obse
                 transaction.set(db.document(path),Dialog(lastMessage = message, users = hashMapOf(user to Date(),user2 to Date())).toUpdateModel())
                 return@runTransaction
             }.addOnSuccessListener {
-                db.collection("$path/messages".substring(1)).document().set(message).addOnSuccessListener {
+                db.collection("$path/messages").document().set(message).addOnSuccessListener {
                     observer.onNext(Unit)
                     observer.onComplete()
                 }.addOnFailureListener {

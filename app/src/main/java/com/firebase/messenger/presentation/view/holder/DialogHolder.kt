@@ -13,7 +13,7 @@ class DialogHolder(val view: View, adapter: SRAdapter<Dialog>): SRAdapter.SRView
     override fun bindHolder(dialog: Dialog) {
         view.apply {
             name.text = dialog.name
-            message.text = dialog.documentPath
+            message.text = dialog.lastMessage?.message
             setOnClickListener {
 //                FirebaseFirestore.getInstance().document(dialog.documentPath!!).set(dialog.apply { name += "1" }).addOnCompleteListener {  }
                 Navigator.navigateToChat(adapter.context,dialog.documentPath!!)

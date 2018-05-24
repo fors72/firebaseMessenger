@@ -22,6 +22,10 @@ import javax.inject.Inject
 @ChatScope
 class ChatPresenter @Inject constructor(private val useCase: ChatUseCase):BasePresenter<ChatView,List<DocumentSnapshot>>() {
 
+    init {
+        useCase.messageObserver = MessageObserver()
+    }
+
 
     var isLoading = false
 
